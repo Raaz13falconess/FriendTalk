@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const userModel = require("./models/userModel");
+const chatModel = require("./models/chatModel");
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -45,6 +46,14 @@ usp.on('connection', async (socket)=> {
     });
     socket.on('newChat', (data)=> {
         socket.broadcast.emit('loadNewChat', data);
+    })
+
+    socket.on('existsChat', async (data)=> {
+        var chats = await chatModel.find({ $or :[
+            {sender_id : data.sender_id , receiver_id : data.receiver_id}, 
+            {sender_id : data.receiver_id, receiver_id : data.sender_id}
+        ]});
+        socket.emit('loadChats', {chats : chats});
     })
 })
 
