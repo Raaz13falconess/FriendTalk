@@ -101,4 +101,13 @@ const saveChat = async(req, res) => {
     }
 }
 
-module.exports = { registerLoad, register, logout, loadDashboard, loadLogin, login, saveChat};
+const deleteChat = async (req, res) => {
+    try {
+        await chatModel.deleteOne({_id : req.body.id});
+        res.status(200).send({success : true});
+    } catch (error) {
+        res.status(400).send({success: false, msg : error.message});
+    }
+}
+
+module.exports = { registerLoad, register, logout, loadDashboard, loadLogin, login, saveChat, deleteChat};

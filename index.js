@@ -30,7 +30,7 @@ const io = require("socket.io")(http)
 var usp = io.of('/user-namespace');
 
 usp.on('connection', async (socket)=> {
-    console.log(`user connected`);
+
 
     var userId = socket.handshake.auth.token;
     await userModel.findByIdAndUpdate({_id : userId}, {$set : {is_online : '1'}});
@@ -38,7 +38,6 @@ usp.on('connection', async (socket)=> {
     socket.broadcast.emit('getOnlineUser', {user_id : userId});
 
     socket.on('disconnect', async ()=> {
-        console.log(`user disconnected`);
         var userId = socket.handshake.auth.token;
         await userModel.findByIdAndUpdate({_id : userId}, {$set : {is_online : '0'}});
 
